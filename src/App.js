@@ -1,12 +1,16 @@
+// App.js
+
 import React, { useState } from "react";
 
 import "./App.css";
 
 function App() {
 
+  // INPUT STATE
   const [input, setInput] =
     useState("");
 
+  // RESULT STATE
   const [result, setResult] =
     useState("");
 
@@ -17,7 +21,7 @@ function App() {
     setInput(input + value);
   };
 
-  // CLEAR SCREEN
+  // CLEAR INPUT
 
   const clearInput = () => {
 
@@ -31,7 +35,12 @@ function App() {
 
     try {
 
-      const output = eval(input);
+      const output =
+        Function(
+          '"use strict"; return (' +
+          input +
+          ')'
+        )();
 
       setResult(output);
 
@@ -44,6 +53,8 @@ function App() {
   return (
 
     <div className="calculator-container">
+
+      {/* TITLE */}
 
       <h1>
         React Calculator
@@ -59,11 +70,15 @@ function App() {
 
       {/* RESULT */}
 
-      <h2>{result}</h2>
+      <h2>
+        {result}
+      </h2>
 
-      {/* BUTTONS */}
+      {/* BUTTON GRID */}
 
       <div className="button-grid">
+
+        {/* ROW 1 */}
 
         <button
           onClick={() =>
@@ -97,6 +112,8 @@ function App() {
           +
         </button>
 
+        {/* ROW 2 */}
+
         <button
           onClick={() =>
             handleClick("4")
@@ -128,6 +145,8 @@ function App() {
         >
           -
         </button>
+
+        {/* ROW 3 */}
 
         <button
           onClick={() =>
@@ -161,12 +180,13 @@ function App() {
           *
         </button>
 
+        {/* ROW 4 */}
+
         <button
           onClick={clearInput}
         >
           C
         </button>
-
         <button
           onClick={() =>
             handleClick("0")
@@ -194,5 +214,4 @@ function App() {
     </div>
   );
 }
-
 export default App;
