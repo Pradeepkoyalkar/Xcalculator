@@ -5,10 +5,12 @@ import "./App.css";
 function App() {
 
   // INPUT STATE
+
   const [input, setInput] =
     useState("");
 
   // RESULT STATE
+
   const [result, setResult] =
     useState("");
 
@@ -33,19 +35,43 @@ function App() {
 
     try {
 
+      // INVALID EXPRESSION
+
+      if (
+        input.endsWith("+") ||
+        input.endsWith("-") ||
+        input.endsWith("*") ||
+        input.endsWith("/")
+      ) {
+
+        setResult("Error");
+        return;
+      }
+
+      // SPLIT NUMBERS
+
       let numbers =
         input.split(/[+\-*/]/);
+
+      // GET OPERATORS
 
       let operators =
         input.match(/[+\-*/]/g);
 
+      // FIRST NUMBER
+
       let resultValue =
         Number(numbers[0]);
 
+      // IF ONLY ONE NUMBER
+
       if (!operators) {
+
         setResult(resultValue);
         return;
       }
+
+      // CALCULATIONS
 
       for (
         let i = 0;
@@ -87,6 +113,8 @@ function App() {
         }
       }
 
+      // SET RESULT
+
       setResult(resultValue);
 
     } catch {
@@ -119,9 +147,11 @@ function App() {
         {result}
       </h2>
 
-      {/* BUTTONS */}
+      {/* BUTTON GRID */}
 
       <div className="button-grid">
+
+        {/* ROW 1 */}
 
         <button
           onClick={() =>
@@ -155,6 +185,8 @@ function App() {
           +
         </button>
 
+        {/* ROW 2 */}
+
         <button
           onClick={() =>
             handleClick("4")
@@ -187,6 +219,8 @@ function App() {
           -
         </button>
 
+        {/* ROW 3 */}
+
         <button
           onClick={() =>
             handleClick("1")
@@ -218,6 +252,8 @@ function App() {
         >
           *
         </button>
+
+        {/* ROW 4 */}
 
         <button
           onClick={clearInput}
