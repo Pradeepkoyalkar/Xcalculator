@@ -88,7 +88,7 @@ function App() {
 
       let tokens =
         input.match(
-          /\d+|\+|\-|\*|\//g
+          /\d+|[+*/-]/g
         );
 
       if (!tokens) {
