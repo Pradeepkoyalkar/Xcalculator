@@ -1,17 +1,11 @@
-// App.js
-
 import React, { useState } from "react";
 
 import "./App.css";
 
 function App() {
 
-  // INPUT STATE
-
   const [input, setInput] =
     useState("");
-
-  // RESULT STATE
 
   const [result, setResult] =
     useState("");
@@ -33,6 +27,33 @@ function App() {
     setResult("");
   };
 
+  // APPLY OPERATION
+
+  const applyOperation = (
+    a,
+    b,
+    operator
+  ) => {
+
+    switch (operator) {
+
+      case "+":
+        return a + b;
+
+      case "-":
+        return a - b;
+
+      case "*":
+        return a * b;
+
+      case "/":
+        return a / b;
+
+      default:
+        return b;
+    }
+  };
+
   // CALCULATE RESULT
 
   const calculateResult = () => {
@@ -49,25 +70,23 @@ function App() {
         return;
       }
 
-      // CHECK INVALID LAST CHARACTER
+      // INVALID LAST CHARACTER
 
       const lastChar =
         input[input.length - 1];
 
       if (
-        lastChar === "+" ||
-        lastChar === "-" ||
-        lastChar === "*" ||
-        lastChar === "/"
+        ["+", "-", "*", "/"]
+          .includes(lastChar)
       ) {
 
         setResult("Error");
         return;
       }
 
-      // TOKENIZE INPUT
+      // TOKENIZE
 
-      const tokens =
+      let tokens =
         input.match(
           /\d+|\+|\-|\*|\//g
         );
@@ -78,12 +97,11 @@ function App() {
         return;
       }
 
-      // FIRST NUMBER
+      // FIRST PASS (* and /)
 
-      let total =
-        Number(tokens[0]);
-
-      // PROCESS OPERATORS
+      let stack = [
+        Number(tokens[0])
+      ];
 
       for (
         let i = 1;
@@ -91,47 +109,56 @@ function App() {
         i += 2
       ) {
 
-        const operator =
+        let operator =
           tokens[i];
 
-        const nextNumber =
+        let nextNumber =
           Number(tokens[i + 1]);
 
-        switch (operator) {
+        if (
+          operator === "*"
+        ) {
 
-          case "+":
-
-            total =
-              total + nextNumber;
-
-            break;
-
-          case "-":
-
-            total =
-              total - nextNumber;
-
-            break;
-
-          case "*":
-
-            total =
-              total * nextNumber;
-
-            break;
-
-          case "/":
-
-            total =
-              total / nextNumber;
-
-            break;
-
-          default:
-
-            setResult("Error");
-            return;
+          stack.push(
+            stack.pop() *
+            nextNumber
+          );
         }
+
+        else if (
+          operator === "/"
+        ) {
+
+          stack.push(
+            stack.pop() /
+            nextNumber
+          );
+        }
+
+        else {
+
+          stack.push(operator);
+          stack.push(nextNumber);
+        }
+      }
+
+      // SECOND PASS (+ and -)
+
+      let total =
+        stack[0];
+
+      for (
+        let i = 1;
+        i < stack.length;
+        i += 2
+      ) {
+
+        total =
+          applyOperation(
+            total,
+            stack[i + 1],
+            stack[i]
+          );
       }
 
       // HANDLE NaN
@@ -160,13 +187,9 @@ function App() {
 
     <div className="calculator-container">
 
-      {/* TITLE */}
-
       <h1>
         React Calculator
       </h1>
-
-      {/* INPUT FIELD */}
 
       <input
         type="text"
@@ -174,147 +197,34 @@ function App() {
         readOnly
       />
 
-      {/* RESULT */}
-
       <h2>
         {result}
       </h2>
 
-      {/* BUTTONS */}
-
       <div className="button-grid">
 
-        {/* ROW 1 */}
+        <button onClick={() => handleClick("7")}>7</button>
+        <button onClick={() => handleClick("8")}>8</button>
+        <button onClick={() => handleClick("9")}>9</button>
+        <button onClick={() => handleClick("+")}>+</button>
 
-        <button
-          onClick={() =>
-            handleClick("7")
-          }
-        >
-          7
-        </button>
+        <button onClick={() => handleClick("4")}>4</button>
+        <button onClick={() => handleClick("5")}>5</button>
+        <button onClick={() => handleClick("6")}>6</button>
+        <button onClick={() => handleClick("-")}>-</button>
 
-        <button
-          onClick={() =>
-            handleClick("8")
-          }
-        >
-          8
-        </button>
+        <button onClick={() => handleClick("1")}>1</button>
+        <button onClick={() => handleClick("2")}>2</button>
+        <button onClick={() => handleClick("3")}>3</button>
+        <button onClick={() => handleClick("*")}>*</button>
 
-        <button
-          onClick={() =>
-            handleClick("9")
-          }
-        >
-          9
-        </button>
+        <button onClick={clearInput}>C</button>
 
-        <button
-          onClick={() =>
-            handleClick("+")
-          }
-        >
-          +
-        </button>
+        <button onClick={() => handleClick("0")}>0</button>
 
-        {/* ROW 2 */}
+        <button onClick={calculateResult}>=</button>
 
-        <button
-          onClick={() =>
-            handleClick("4")
-          }
-        >
-          4
-        </button>
-
-        <button
-          onClick={() =>
-            handleClick("5")
-          }
-        >
-          5
-        </button>
-
-        <button
-          onClick={() =>
-            handleClick("6")
-          }
-        >
-          6
-        </button>
-
-        <button
-          onClick={() =>
-            handleClick("-")
-          }
-        >
-          -
-        </button>
-
-        {/* ROW 3 */}
-
-        <button
-          onClick={() =>
-            handleClick("1")
-          }
-        >
-          1
-        </button>
-
-        <button
-          onClick={() =>
-            handleClick("2")
-          }
-        >
-          2
-        </button>
-
-        <button
-          onClick={() =>
-            handleClick("3")
-          }
-        >
-          3
-        </button>
-
-        <button
-          onClick={() =>
-            handleClick("*")
-          }
-        >
-          *
-        </button>
-
-        {/* ROW 4 */}
-
-        <button
-          onClick={clearInput}
-        >
-          C
-        </button>
-
-        <button
-          onClick={() =>
-            handleClick("0")
-          }
-        >
-          0
-        </button>
-
-        <button
-          onClick={calculateResult}
-        >
-          =
-        </button>
-
-        <button
-          onClick={() =>
-            handleClick("/")
-          }
-        >
-          /
-        </button>
+        <button onClick={() => handleClick("/")}>/</button>
 
       </div>
 
