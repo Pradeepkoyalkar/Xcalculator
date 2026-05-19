@@ -34,10 +34,10 @@ function App() {
     try {
 
       let numbers =
-        input.split(/[\+\-\*\/]/);
+        input.split(/[+\-*/]/);
 
       let operators =
-        input.match(/[\+\-\*\/]/g);
+        input.match(/[+\-*/]/g);
 
       let resultValue =
         Number(numbers[0]);
